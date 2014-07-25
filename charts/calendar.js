@@ -1,3 +1,6 @@
+// a horizental  calendar control inspired by Google Calendar and D3 Brush Snapping block 
+// http://bl.ocks.org/mbostock/6232620
+
 if (!d3.chart) d3.chart = {};
 
 d3.chart.calendar = function () {
@@ -8,7 +11,7 @@ d3.chart.calendar = function () {
         var today = d3.time.day(new Date());
         var tomorrow = d3.time.day.offset(today, 1);
 
-        console.log("#range ", [today, tomorrow]);
+//        console.log("#range ", [today, tomorrow]);
         return [today, tomorrow]; 
     };
 
@@ -78,20 +81,24 @@ d3.chart.calendar = function () {
         gBrush.selectAll("rect")
             .attr("height", height);
 
+
         function brushed() {
             var extent0 = brush.extent();
+            var current_timespan = extent0[1] - extent0[0];
+            var current_timespan_in_seconds = Math.round(current_timespan / 1000);
             var extent1;
-
+        
             // if dragging, preserve the width of the extent
+            // and snap to the nearest Hour.
+            // todo: snap to nearest half an hour
             if (d3.event.mode === "move") {
                 var d0 = d3.time.hour.round(extent0[0]);
-                var d1 = d3.time.hour.offset(d0, Math.round((extent0[1] - extent0[0]) / (60 * 60 * 100)));
+                var d1 = d3.time.second.offset(d0, current_timespan_in_seconds);
                 
                 extent1 = [d0, d1];
-                extent1 = extent0;
             }
 
-            // otherwise, if resizing, round both dates
+            // otherwise, if resizing, round both dates to nearest hour
             else {
                 
                 extent1 = extent0.map(d3.time.hour.round);
@@ -101,9 +108,7 @@ d3.chart.calendar = function () {
                     extent1[0] = d3.time.hour.floor(extent0[0]);
                     extent1[1] = d3.time.hour.ceil(extent0[1]);
                 }
-                
             }
-
             d3.select(this).call(brush.extent(extent1));
         }
     }
