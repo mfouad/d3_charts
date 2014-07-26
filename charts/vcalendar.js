@@ -5,7 +5,7 @@ if (!d3.chart) d3.chart = {};
 
 d3.chart.vcalendar = function () {
 
-    var data;
+    var events;
     var margin;
     var width;
     var height;
@@ -23,17 +23,21 @@ d3.chart.vcalendar = function () {
             .domain(getToday())
             .range([0, height]);
 
-        var brush = d3.svg.brush()
-            .y(timeScale)
-            .on("brush", brushed);
+        var brushes = events.map( function(d){
+            return d3.svg.brush()
+                .y(timeScale)
+            .clamp([true])
+               // .on("brush", brushed)
+                .extent([d.start, d.end]);
+            
+        });
 
         container
             .attr("width", width + margin.left + margin.right)
             .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            //.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-        var cal = container.append("rect")
+            
+        
+        var cal = container.append("g").append("rect")
             .attr("class", "grid-background")
             .attr("width", width)
             .attr("height", height)
@@ -68,15 +72,23 @@ d3.chart.vcalendar = function () {
             .attr("x", -40)
             .style("text-anchor", null);
 
-        var gBrush = container.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-            .attr("class", "brush")
+        var gEvents = container.append("g");
 
-        brush(gBrush);
-        
-        gBrush.selectAll("rect")
-            .attr("width", width);
+        brushes.forEach(function(brush) {
+            
+            var gBrush = gEvents.append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+                .attr("class", "brush");
+            
+            brush(gBrush);
 
+            gBrush.selectAll("rect").attr("width", width);
+            
+            // Each brush has a large background rect to capture mouse events on the whole domain
+            // this background will cover older brushes, and only force the use of the latest created brush
+            // disable this behaviour by making the brush background very small
+            gBrush.selectAll(".background").attr("height",0);
+        });
         
 
         function brushed() {
@@ -133,8 +145,8 @@ d3.chart.vcalendar = function () {
 
      
     chart.data = function (val) {
-        if (!arguments.length) return data;
-        data = val;
+        if (!arguments.length) return events;
+        events = val;
         return chart;
     }
 
