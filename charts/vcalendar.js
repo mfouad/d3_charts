@@ -130,6 +130,8 @@ d3.chart.vcalendar = function () {
                 }
             } 
 
+            event.start = extent1[0];
+            event.end = extent1[1];
             // apply the new extent, then redraw the brush
             // then redraw the text in the middle
             brush.extent(extent1);
