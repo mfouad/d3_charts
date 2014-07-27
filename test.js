@@ -4,14 +4,11 @@ var svg = d3.select("#main");
 // load data
 var data = events;
 
-console.log(data);
-
 data.forEach(function(d){
     date = new Date();
     d.start = date.setHours(d.start);
     d.end = date.setHours(d.end);
 });
-console.log(data);
 
 var margin = {
     left: 100,
