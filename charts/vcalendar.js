@@ -87,10 +87,17 @@ d3.chart.vcalendar = function () {
             .attr("class", "brush")
 
         // text position will be set by the brush event
-        brush.text = gBrush.append("text").text(event.name).attr({
-            x: 30,
-            y: timeScale(d3.sum(extent) / 2)
-        });
+        brush.text = gBrush.append("text").text(event.name)
+            .attr("x", 30)
+            .attr("y", timeScale(d3.sum(extent) / 2))
+        
+        brush.checkbox = gBrush.append("foreignObject")
+            .attr('x', 20)
+            .attr('y', timeScale(d3.sum(extent) / 2))
+            .attr('width', "50px")
+            .attr('height', "20px")
+            .append("xhtml:body")
+            .html("<form><input type=checkbox id=check></input></form>");
 
         // Draw the brush
         brush(gBrush);
