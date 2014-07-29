@@ -99,10 +99,10 @@ d3.chart.vcalendar = function () {
         gBrush.selectAll("rect").attr("width", width);
         
          brush.checkbox = gBrush.append("foreignObject")
-            .attr('x', 3)
-            .attr('y', timeScale(d3.sum(extent) / 2))
-            .attr('width', "25px")
-            .attr('height', "20px")
+            .attr('x', 10)
+            .attr('y', timeScale(d3.sum(extent) / 2) - 10)
+            .attr('width', "20")
+            .attr('height', "20")
          
          brush.checkbox//.append("xhtml:body")
             .html("<form><input class=task type=checkbox id=check></input></form>");
@@ -151,7 +151,7 @@ d3.chart.vcalendar = function () {
             
             var y = timeScale(d3.sum(extent1) / 2);
             brush.text.attr("y", y);
-            brush.checkbox.attr("y", y);
+            brush.checkbox.attr("y", y - 10);
             brush(gBrush);
         }
     }
