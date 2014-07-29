@@ -153,6 +153,7 @@ d3.chart.vcalendar = function () {
             brush.text.attr("y", y);
             brush.checkbox.attr("y", y - 10);
             brush(gBrush);
+            gBrush.selectAll(".background").attr("height", 0);
         }
     }
 
