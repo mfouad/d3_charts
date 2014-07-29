@@ -81,32 +81,32 @@ d3.chart.vcalendar = function () {
             .y(timeScale)
             .extent(extent)
             .on("brush", brushed);
-        
+
         var gBrush = gEvents.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("class", "brush")
 
-       
-        
-       
+
+        // Draw the brush
+        brush(gBrush);
+
         // text position will be set by the brush event
         brush.text = gBrush.append("text").text(event.name)
             .attr("x", 30)
             .attr("y", timeScale(d3.sum(extent) / 2))
 
-        // Draw the brush
-        brush(gBrush);
+
         gBrush.selectAll("rect").attr("width", width);
-        
-         brush.checkbox = gBrush.append("foreignObject")
+
+        brush.checkbox = gBrush.append("foreignObject")
             .attr('x', 10)
             .attr('y', timeScale(d3.sum(extent) / 2) - 10)
             .attr('width', "20")
             .attr('height', "20")
-         
-         brush.checkbox//.append("xhtml:body")
-            .html("<form><input class=task type=checkbox id=check></input></form>");
-        
+
+        brush.checkbox //.append("xhtml:body")
+        .html("<form><input class=task type=checkbox id=check></input></form>");
+
 
         // Each brush has a large background rect to capture mouse events on the whole domain
         // this background will cover older brushes, and only force the use of the latest created brush
@@ -140,15 +140,15 @@ d3.chart.vcalendar = function () {
                     extent1[0] = d3.time.hour.floor(extent0[0]);
                     extent1[1] = d3.time.hour.ceil(extent0[1]);
                 }
-            } 
+            }
 
-            
+
             event.start = extent1[0];
             event.end = extent1[1];
             // apply the new extent, then redraw the brush
             // then redraw the text in the middle
             brush.extent(extent1);
-            
+
             var y = timeScale(d3.sum(extent1) / 2);
             brush.text.attr("y", y);
             brush.checkbox.attr("y", y - 10);
