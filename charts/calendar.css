@@ -32,3 +32,14 @@
   fill-opacity: .125;
   shape-rendering: crispEdges;
 }
+
+.task {
+    margin: 0px;
+    padding: 0px;
+}
+
+.done {
+}
+
+.todo {
+}
