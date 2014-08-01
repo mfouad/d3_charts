@@ -5,9 +5,8 @@
 if (!d3.chart) { d3.chart = {}; }
 
 d3.chart.vcalendar = function () {
-
     "use strict";
-    var events, margin, width, height, timeScale, gEvents;
+    var events, margin, width, height, timeScale, gEvents, timer, gTimer;
 
     function getToday() {
         var today = d3.time.day(new Date()),
@@ -29,17 +28,19 @@ d3.chart.vcalendar = function () {
             .attr("height", height + margin.top + margin.bottom);
 
 
-        var cal = container.append("g").append("rect")
+        var gCal = container.append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+        gCal.append("rect")
             .attr("class", "grid-background")
             .attr("width", width)
             .attr("height", height)
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            
 
 
         // Draw grid
-        container.append("g")
+        gCal.append("g")
             .attr("class", "x grid")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .call(d3.svg.axis()
                 .scale(timeScale)
                 .orient("left")
@@ -52,9 +53,9 @@ d3.chart.vcalendar = function () {
             });
 
         // draw ticks
-        container.append("g")
+        gCal.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+            //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .call(d3.svg.axis()
                 .scale(timeScale)
                 .orient("left")
@@ -63,16 +64,50 @@ d3.chart.vcalendar = function () {
             .selectAll("text")
             .attr("x", -40)
             .style("text-anchor", null);
+        
+        gEvents = gCal.append("g");
+        
+        // draw the Timer progress line
+        gTimer = gCal.append("g")
+            .attr("class", "timer")
+        
+        chart.moveTimer();
+            
+        gTimer.append("line")
+            .attr("x1", 0)
+            .attr("y1", 0)
+            .attr("x2", width)
+            .attr("y2", 0)
+            .classed("timeline", true);
+        gTimer.append("circle")
+            .attr("cx", 0)
+            .attr("cy", 0)
+            .attr("r", 2)
+            .classed("timeblob", true);
 
-        gEvents = container.append("g");
 
         // Creates a brush for each event
-        events.forEach(chart.CreateBrush);
+        events.forEach(chart.addEvent);
+        
+        chart.start();
 
     }
+    
+    chart.start = function () {
+        timer = setInterval(chart.moveTimer, 60 * 1000);
+    };
+            
+    chart.stop = function () {
+        clearInterval(timer);
+    };
 
+    chart.moveTimer = function () {
+        var yTimer = timeScale(Date.now());
+        gTimer.attr("transform", "translate(" + 0 + "," + yTimer + ")");
+    };
+    
     // a function factory, associates a brush with an event
-    chart.CreateBrush = function (event) {
+    chart.addEvent = function (event) {
         var extent,
             brush,
             gBrush;
@@ -84,7 +119,6 @@ d3.chart.vcalendar = function () {
             .on("brush", brushed);
 
         gBrush = gEvents.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .attr("class", "brush");
 
 
@@ -97,7 +131,13 @@ d3.chart.vcalendar = function () {
             .attr("y", timeScale(d3.sum(extent) / 2));
 
 
-        gBrush.selectAll("rect").attr("width", width);
+        gBrush.classed("future", (event.end >= Date.now()))
+            .classed("past", event.end < Date.now());
+
+        
+        gBrush.selectAll("rect")
+            .attr("width", width)
+        
 
         brush.checkbox = gBrush.append("foreignObject")
             .attr('x', 10)
@@ -114,6 +154,7 @@ d3.chart.vcalendar = function () {
         // disable this behaviour by making the brush background very small
         gBrush.selectAll(".background").attr("height", 0);
 
+        
         // this is a closure callback function, it will have access to all the variables
         // declared in this specific CreateEvent function
         function brushed() {
@@ -149,17 +190,25 @@ d3.chart.vcalendar = function () {
             }
 
 
-            event.start = extent1[0];
-            event.end = extent1[1];
+           
+            
             // apply the new extent, then redraw the brush
             // then redraw the text in the middle
             brush.extent(extent1);
+            
+            // set event data
+            event.start = extent1[0];
+            event.end = extent1[1];
+            event.past = true;
 
+            // animate
             y = timeScale(d3.sum(extent1) / 2);
             brush.text.attr("y", y);
             brush.checkbox.attr("y", y - 10);
             brush(gBrush);
             gBrush.selectAll(".background").attr("height", 0);
+            gBrush.classed("future", (event.end >= Date.now()))
+                .classed("past", event.end < Date.now());
         }
     };
 

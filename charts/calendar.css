@@ -1,47 +1,58 @@
 .axis text {
-  font: 12px sans-serif;
+    font: 12px sans-serif;
 }
-
 .axis path {
-  display: none;
+    display: none;
 }
-
 .axis line {
-  fill: none;
-/*  stroke: #000;*/
-  shape-rendering: crispEdges;
+    fill: none;
+    /*  stroke: #000;*/
+    shape-rendering: crispEdges;
 }
-
 .grid-background {
-  fill: #ddd;
+    fill: #ddd;
 }
-
 .grid line,
 .grid path {
-  fill: none;
-  stroke: #fff;
-  shape-rendering: crispEdges;
+    fill: none;
+    stroke: #fff;
+    shape-rendering: crispEdges;
 }
-
 .grid .minor.tick line {
-  stroke-opacity: .5;
+    stroke-opacity: .5;
 }
-
-.brush .extent {
-  fill: rgb(39, 235, 120);
-/*  fill-opacity: .125;*/
-  shape-rendering: crispEdges;
+.future rect {
+    fill: rgb(39, 235, 120);
+    shape-rendering: crispEdges;
     stroke: rgba(201, 132, 52, 0.65);
-    
+}
+.past rect {
+    fill: rgb(110, 240, 170);
+    shape-rendering: crispEdges;
+    stroke: rgba(201, 132, 52, 0.65);
 }
 
+.past text {
+    fill: rgba(168, 178, 172, 0.88);
+}
+
+.future text {
+    fill: #000;
+}
+
+
+.timer .timeline {
+    shape-rendering: crispEdges;
+    stroke: rgb(154, 26, 26);
+    stroke-width: 2
+}
+.timer .timeblob {
+    fill: rgb(154, 26, 26);
+    stroke: rgb(154, 26, 26);
+    stroke-width: 2
+}
 .task {
     margin: 0px;
     padding: 0px;
 }
-
-.done {
-}
-
-.todo {
-}
+.done {} .todo {}
