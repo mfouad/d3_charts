@@ -28,9 +28,11 @@
 }
 
 .brush .extent {
-  stroke: #000;
-  fill-opacity: .125;
+  fill: rgb(39, 235, 120);
+/*  fill-opacity: .125;*/
   shape-rendering: crispEdges;
+    stroke: rgba(201, 132, 52, 0.65);
+    
 }
 
 .task {

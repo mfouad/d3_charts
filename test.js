@@ -4,8 +4,9 @@ var svg = d3.select("#main");
 // load data
 var data = events;
 
-data.forEach(function(d){
-    date = new Date();
+data.forEach(function (d) {
+    var date = new Date();
+    
     d.start = date.setHours(d.start);
     d.end = date.setHours(d.end);
 });
