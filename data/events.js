@@ -1,8 +1,8 @@
 var events = [
-    {"name":"Publish the code", "start": 10, "end": 11},
-    {"name":"Post the link", "start": 12, "end": 13},
-    {"name":"review your code", "start": 14, "end": 15},
-    {"name":"hate self", "start": 16, "end": 17},
-    {"name":"watch Naruto", "start": 18, "end": 19},
-    {"name":"sleep", "start": 20, "end": 21}
+    {"name":"Publish the code", "start": 1, "end": 2},
+    {"name":"Post the link", "start": 3, "end": 5},
+    {"name":"review your code", "start": 6, "end": 7},
+    {"name":"hate self", "start": 8, "end": 9},
+    {"name":"watch Naruto", "start": 10, "end": 11},
+    {"name":"sleep", "start": 12, "end": 13}
 ];
