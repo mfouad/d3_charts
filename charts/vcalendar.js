@@ -6,14 +6,20 @@ if (!d3.chart) { d3.chart = {}; }
 
 d3.chart.vcalendar = function () {
     "use strict";
-    var events, margin, width, height, timeScale, gEvents, timer, gTimer;
+    var events, margin, width, height, timeScale, gEvents, timer, gTimer, timeFormater;
 
     function getToday() {
         var today = d3.time.day(new Date()),
             tomorrow = d3.time.day.offset(today, 1);
-
+        
         return [today, tomorrow];
     }
+    
+    timeFormater = d3.time.format.multi([
+          ["%_I:%M", function(d) { return d.getMinutes(); }],
+          ["%_I %p", function(d) { return d.getHours(); }],
+          ["%b %d", function(d) { return d.getDate(); }]
+        ]);
 
 
     function chart(container) {
@@ -55,15 +61,15 @@ d3.chart.vcalendar = function () {
         // draw ticks
         gCal.append("g")
             .attr("class", "x axis")
-            //.attr("transform", "translate(" + margin.left + "," + margin.top + ")")
             .call(d3.svg.axis()
                 .scale(timeScale)
                 .orient("left")
                 .ticks(d3.time.hours)
-                .tickPadding(0))
+                .tickPadding(0)
+                .tickFormat(timeFormater))
             .selectAll("text")
-            .attr("x", -40)
-            .style("text-anchor", null);
+            .attr("x", -8)
+            .style("text-anchor", "end");
         
         gEvents = gCal.append("g");
         

@@ -1,5 +1,6 @@
-.axis text {
+.tick text {
     font: 12px sans-serif;
+    text-anchor:start;
 }
 .axis path {
     display: none;
