@@ -5,7 +5,7 @@ var svg = d3.select("#main");
 var data = events;
 
 data.forEach(function (d) {
-    var date = new Date();
+    var date = d3.time.hour.round(new Date());
     
     d.start = date.setHours(d.start);
     d.end = date.setHours(d.end);
