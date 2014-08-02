@@ -3,24 +3,40 @@
     text-anchor:start;
 }
 .axis path {
-    display: none;
-}
-.axis line {
     fill: none;
-    /*  stroke: #000;*/
-    shape-rendering: crispEdges;
+    stroke: #aaa;
+    stroke-width:0.5;
+
 }
-.grid-background {
-    fill: #ddd;
-}
-.grid line,
+
 .grid path {
     fill: none;
-    stroke: #fff;
-    shape-rendering: crispEdges;
+    stroke: none;
 }
-.grid .minor.tick line {
-    stroke-opacity: .5;
+
+.grid-background
+{
+    stroke: grey;
+    stroke-width:0.5;
+    fill: rgba(0, 0, 0, 0.03);
+}
+
+.axis line {
+    stroke: #aaa;
+    stroke-width:0.5;
+    fill: #fff;
+}
+
+.grid .major.tick line
+{
+    display: none;
+}
+
+.grid .minor.tick line 
+{
+    stroke: #aaa;
+    stroke-width:0.5;
+    stroke-dasharray: 2,2
 }
 .future rect {
     fill: rgb(39, 235, 120);

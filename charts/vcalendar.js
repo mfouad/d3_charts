@@ -6,8 +6,9 @@ if (!d3.chart) { d3.chart = {}; }
 
 d3.chart.vcalendar = function () {
     "use strict";
-    var events, margin, width, height, timeScale, gEvents, timer, gTimer, timeFormater;
-
+    var events, width, height, timeScale, gEvents, timer, gTimer, timeFormater,
+        inner_width, xpos , ypos, margin;
+    
     function getToday() {
         var today = d3.time.day(new Date()),
             tomorrow = d3.time.day.offset(today, 1);
@@ -23,53 +24,59 @@ d3.chart.vcalendar = function () {
 
 
     function chart(container) {
+        
+        inner_width = width - margin;
+        
         timeScale = d3.time.scale()
             .domain(getToday())
             .range([0, height]);
 
+        var gFrame = container.append("g")
+            .attr("width", width )
+            .attr("height", height )
+            .attr("transform", "translate(" + xpos + "," + ypos + ")");
+        
+        
+        
+                // draw hour ticks
+        gFrame.append("g")
+            .attr("class", "x axis")
+            .call(d3.svg.axis()
+                .scale(timeScale)
+                .orient("left")
+                .ticks(d3.time.hours)
+                .tickSize(-width, 0)
+                .tickPadding(0)
+                .tickFormat(timeFormater))
+            .selectAll("text")
+            .attr("x", margin - 8)
+            .attr("y", 8)
+            .style("text-anchor", "end");
 
-
-        container
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom);
-
-
-        var gCal = container.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+        var gCal = gFrame.append("g")
+            .attr("width", inner_width)
+            .attr("height", height)
+            .attr("transform", "translate(" + margin + "," + 0 + ")");
         
         gCal.append("rect")
             .attr("class", "grid-background")
-            .attr("width", width)
-            .attr("height", height)
-            
-
-
-        // Draw grid
+            .attr("width", inner_width)
+            .attr("height", height);
+        
+        // Draw half hour ticks
         gCal.append("g")
             .attr("class", "x grid")
             .call(d3.svg.axis()
                 .scale(timeScale)
                 .orient("left")
                 .ticks(d3.time.minutes, 30)
-                .tickSize(-width)
+                .tickSize(-inner_width)
                 .tickFormat(""))
             .selectAll(".tick")
-            .classed("minor", function (d) {
-                return d.getHours();
-            });
+            .classed("minor", function (d) { return d.getMinutes();})
+            .classed("major", function (d) { return d.getMinutes() === 0;});
 
-        // draw ticks
-        gCal.append("g")
-            .attr("class", "x axis")
-            .call(d3.svg.axis()
-                .scale(timeScale)
-                .orient("left")
-                .ticks(d3.time.hours)
-                .tickPadding(0)
-                .tickFormat(timeFormater))
-            .selectAll("text")
-            .attr("x", -8)
-            .style("text-anchor", "end");
         
         gEvents = gCal.append("g");
         
@@ -82,7 +89,7 @@ d3.chart.vcalendar = function () {
         gTimer.append("line")
             .attr("x1", 0)
             .attr("y1", 0)
-            .attr("x2", width)
+            .attr("x2", inner_width)
             .attr("y2", 0)
             .classed("timeline", true);
         gTimer.append("circle")
@@ -142,7 +149,7 @@ d3.chart.vcalendar = function () {
 
         
         gBrush.selectAll("rect")
-            .attr("width", width)
+            .attr("width", inner_width)
         
 
         brush.checkbox = gBrush.append("foreignObject")
@@ -233,12 +240,19 @@ d3.chart.vcalendar = function () {
         height = val;
         return chart;
     };
-
+    
     chart.margin = function (val) {
         if (!arguments.length) {
             return margin;
         }
         margin = val;
+        return chart;
+    };
+
+
+    chart.translate = function (x, y) {
+        xpos = x;
+        ypos = y;
         return chart;
     };
 
