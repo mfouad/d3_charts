@@ -7,7 +7,7 @@ if (!d3.chart) { d3.chart = {}; }
 d3.chart.vcalendar = function () {
     "use strict";
     var events, width, height, timeScale, gEvents, timer, gTimer, timeFormater,
-        inner_width, xpos , ypos, margin;
+        inner_width, xpos , ypos, margin, gFrame;
     
     function getToday() {
         var today = d3.time.day(new Date()),
@@ -24,6 +24,8 @@ d3.chart.vcalendar = function () {
 
 
     function chart(container) {
+       
+        container.selectAll(gFrame).remove();
         
         inner_width = width - margin;
         
@@ -31,7 +33,7 @@ d3.chart.vcalendar = function () {
             .domain(getToday())
             .range([0, height]);
 
-        var gFrame = container.append("g")
+        gFrame = container.append("g")
             .attr("width", width )
             .attr("height", height )
             .attr("transform", "translate(" + xpos + "," + ypos + ")");
@@ -49,8 +51,8 @@ d3.chart.vcalendar = function () {
                 .tickPadding(0)
                 .tickFormat(timeFormater))
             .selectAll("text")
-            .attr("x", margin - 8)
-            .attr("y", 8)
+            .attr("x", margin - 5)
+            .attr("y", 10)
             .style("text-anchor", "end");
 
         
