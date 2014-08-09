@@ -1,18 +1,27 @@
 // a vertical calendar control inspired by Google Calendar and D3 Brush Snapping block 
 // http://bl.ocks.org/mbostock/6232620
 
+/*global d3 */
+/*global clearInterval */
+/*global setInterval */
 
 if (!d3.chart) { d3.chart = {}; }
 
 d3.chart.vcalendar = function () {
     "use strict";
     var events, width, height, timeScale, gEvents, timer, gTimer, timeFormater,
-        inner_width, xpos , ypos, margin, gFrame;
+        inner_width, xpos , ypos, margin, gFrame, 
+        dayStart = 0,
+        dayEnd = 0;
     
     function getToday() {
         var today = d3.time.day(new Date()),
             tomorrow = d3.time.day.offset(today, 1);
         
+        today = d3.time.hour.offset(today, dayStart);
+        if (dayEnd > 0) {
+            tomorrow = d3.time.hour.offset(today, dayEnd);
+        }
         return [today, tomorrow];
     }
     
@@ -25,7 +34,7 @@ d3.chart.vcalendar = function () {
 
     function chart(container) {
        
-        container.selectAll(gFrame).remove();
+        container.selectAll("*").remove();
         
         inner_width = width - margin;
         
@@ -84,7 +93,7 @@ d3.chart.vcalendar = function () {
         
         // draw the Timer progress line
         gTimer = gCal.append("g")
-            .attr("class", "timer")
+            .attr("class", "timer");
         
         chart.moveTimer();
             
@@ -151,7 +160,7 @@ d3.chart.vcalendar = function () {
 
         
         gBrush.selectAll("rect")
-            .attr("width", inner_width)
+            .attr("width", inner_width);
         
 
         brush.checkbox = gBrush.append("foreignObject")
@@ -265,6 +274,24 @@ d3.chart.vcalendar = function () {
         events = val;
         return chart;
     };
+    
+    chart.dayEnd = function (val) {
+        if (!arguments.length) {
+            return dayEnd;
+        }
+        dayEnd = val;
+        return chart;
+    };
+    
+    chart.dayStart = function (val) {
+        if (!arguments.length) {
+            return dayStart;
+        }
+        dayStart = val;
+        return chart;
+    };
+    
+    
 
 
     return chart;
